@@ -63,6 +63,13 @@ public class FormAuthTestCase extends AuthenticationTestBase {
 
     public static final String HELLO_WORLD = "Hello World";
 
+    static List<AuthenticationMechanism> getTestMechanism() {
+        List<AuthenticationMechanism> ret = new ArrayList<>();
+        ret.add(new CachedAuthenticatedSessionMechanism());
+        ret.add(new FormAuthenticationMechanism("test", "/login", "/error"));
+        return ret;
+    }
+
     @Override
     protected void setRootHandler(HttpHandler current) {
         final PredicateHandler handler = new PredicateHandler(Predicates.path("/login"), new HttpHandler() {
@@ -80,6 +87,9 @@ public class FormAuthTestCase extends AuthenticationTestBase {
 
     @Test
     public void testFormAuth() throws IOException {
+        _testFormAuth();
+    }
+    static void _testFormAuth() throws IOException {
         TestHttpClient client = new TestHttpClient();
         client.setRedirectStrategy(new DefaultRedirectStrategy() {
             @Override
@@ -127,9 +137,6 @@ public class FormAuthTestCase extends AuthenticationTestBase {
 
     @Override
     protected List<AuthenticationMechanism> getTestMechanisms() {
-        List<AuthenticationMechanism> ret = new ArrayList<>();
-        ret.add(new CachedAuthenticatedSessionMechanism());
-        ret.add(new FormAuthenticationMechanism("test", "/login", "/error"));
-        return ret;
+        return getTestMechanism();
     }
 }
